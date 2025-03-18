@@ -1,0 +1,61 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Sign Up - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <div class="form-header">
+            <div class="form-icon">
+                <div class="form-icon-circle">
+                    <span>TF</span>
+                </div>
+            </div>
+            <h2>Create an Account</h2>
+            <p>Join TaskFlow and start managing your tasks efficiently.</p>
+        </div>
+        <form method="post" action="{% url 'signup' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username</label>
+                <div class="input-with-icon">
+                    <div class="input-icon">👤</div>
+                    <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <div class="input-with-icon">
+                    <div class="input-icon">✉️</div>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password1">Password</label>
+                <div class="input-with-icon">
+                    <div class="input-icon">🔒</div>
+                    <input type="password" id="password1" name="password1" placeholder="Create a password" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password2">Confirm Password</label>
+                <div class="input-with-icon">
+                    <div class="input-icon">🔒</div>
+                    <input type="password" id="password2" name="password2" placeholder="Confirm your password" required>
+                </div>
+            </div>
+            <div class="form-terms">
+                <label class="checkbox-container">
+                    <input type="checkbox" required>
+                    <span class="checkmark"></span>
+                    I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                </label>
+            </div>
+            <button type="submit" class="form-submit">Sign Up</button>
+        </form>
+        <div class="form-footer">
+            <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %} 
