@@ -1,0 +1,111 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}TaskFlow - Tasks{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="sidebar">
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="{% url 'dashboard' %}">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="{% url 'tasks' %}">
+                        <i class="fas fa-tasks"></i> Tasks
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'projects' %}">
+                        <i class="fas fa-project-diagram"></i> Projects
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-calendar"></i> Calendar
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-chart-bar"></i> Reports
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </li>
+                <li class="logout-btn">
+                    <a href="{% url 'logout' %}">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+    <div class="main-content">
+        <div class="dashboard-header">
+            <h1>All Tasks</h1>
+            <button class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Task
+            </button>
+        </div>
+        
+        <div class="task-list-container all-tasks">
+            {% if tasks %}
+                <div class="task-list">
+                    {% for task in tasks %}
+                        <div class="task-item {% if task.status == 'completed' %}completed{% endif %}">
+                            <div class="task-details">
+                                <form action="{% url 'update_task_status' task.id %}" method="post" class="task-checkbox-form">
+                                    {% csrf_token %}
+                                    <input type="checkbox" id="task-{{ task.id }}" {% if task.status == 'completed' %}checked{% endif %} onchange="this.form.submit()">
+                                    <label for="task-{{ task.id }}">{{ task.title }}</label>
+                                </form>
+                                <div class="task-meta">
+                                    <span class="task-due-date">Due: {{ task.due_date }}</span>
+                                    {% if task.project %}
+                                        <span class="task-project">Project: {{ task.project.name }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="task-actions">
+                                <a href="#" class="edit-task" title="Edit Task">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="#" class="delete-task" title="Delete Task">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>No tasks found. Create a new task to get started!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // JavaScript for handling the sidebar active state
+    const currentUrl = window.location.pathname;
+    const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+    
+    sidebarLinks.forEach(link => {
+        if (link.getAttribute('href') === currentUrl) {
+            link.parentElement.classList.add('active');
+        } else {
+            link.parentElement.classList.remove('active');
+        }
+    });
+</script>
+{% endblock %} 

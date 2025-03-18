@@ -8,6 +8,7 @@
     </title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'main/css/style.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   </head>
   <body>
     <header>
@@ -17,16 +18,21 @@
             <div class="logo-icon">TF</div>
             <span class="logo-text">TaskFlow</span>
           </div>
+          {% if request.path == '/' or not user.is_authenticated %}
           <div class="nav-links">
             <a href="{% url 'index' %}">Home</a>
             <a href="#">About Us</a>
             <a href="#">Features</a>
             <a href="#">Use Cases</a>
           </div>
+          {% endif %}
           <div class="auth-links">
             {% if user.is_authenticated %}
               <span>Hello, {{ user.username }}</span>
-              <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a>
+              {% if request.path == '/' %}
+                <a href="{% url 'dashboard' %}" class="btn btn-outline">Dashboard</a>
+                <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a>
+              {% endif %}
             {% else %}
               <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
               <a href="{% url 'signup' %}" class="btn btn-primary">Sign Up</a>
@@ -73,5 +79,6 @@
         });
       });
     </script>
+    {% block extra_js %}{% endblock %}
   </body>
 </html>

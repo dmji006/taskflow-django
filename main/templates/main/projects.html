@@ -1,0 +1,113 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}TaskFlow - Projects{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="sidebar">
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="{% url 'dashboard' %}">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'tasks' %}">
+                        <i class="fas fa-tasks"></i> Tasks
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="{% url 'projects' %}">
+                        <i class="fas fa-project-diagram"></i> Projects
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-calendar"></i> Calendar
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-chart-bar"></i> Reports
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </li>
+                <li class="logout-btn">
+                    <a href="{% url 'logout' %}">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+    <div class="main-content">
+        <div class="dashboard-header">
+            <h1>Projects</h1>
+            <button class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Project
+            </button>
+        </div>
+        
+        <div class="projects-container">
+            {% if projects %}
+                <div class="projects-grid">
+                    {% for project in projects %}
+                        <div class="project-card">
+                            <div class="project-card-header">
+                                <h3>{{ project.name }}</h3>
+                                <div class="project-actions">
+                                    <a href="#" class="edit-project" title="Edit Project">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="delete-project" title="Delete Project">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <p class="project-description">
+                                {% if project.description %}
+                                    {{ project.description }}
+                                {% else %}
+                                    No description provided.
+                                {% endif %}
+                            </p>
+                            <div class="project-meta">
+                                <span class="task-count">Tasks: {{ project.tasks.count }}</span>
+                                <span class="project-date">Created: {{ project.created_at|date:"M d, Y" }}</span>
+                            </div>
+                            <a href="#" class="view-project-link">View Tasks</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>No projects found. Create a new project to get started!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // JavaScript for handling the sidebar active state
+    const currentUrl = window.location.pathname;
+    const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+    
+    sidebarLinks.forEach(link => {
+        if (link.getAttribute('href') === currentUrl) {
+            link.parentElement.classList.add('active');
+        } else {
+            link.parentElement.classList.remove('active');
+        }
+    });
+</script>
+{% endblock %} 
