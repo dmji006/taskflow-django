@@ -72,14 +72,33 @@ WSGI_APPLICATION = "taskflow.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "taskflow_db",
+        "USER": "root",  # XAMPP's default MySQL username
+        "PASSWORD": "",  # XAMPP's default MySQL password is empty
+        "HOST": "127.0.0.1",  # Use IP instead of 'localhost' to avoid socket issues
+        "PORT": "3306",
+        "OPTIONS": {
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+            "charset": "utf8mb4",
+        },
     }
 }
+
+# Remove the compatibility patches since Django 4.2 works with MariaDB 10.4
+# DATABASE_COMPATIBILITY_MODE = True
+# if DATABASE_COMPATIBILITY_MODE:
+#     import django.db.backends.mysql.base as mysql_base
+#     original_check_database_version_supported = mysql_base.DatabaseWrapper.check_database_version_supported
+#     def patched_check_version_supported(self):
+#         pass
+#     mysql_base.DatabaseWrapper.check_database_version_supported = patched_check_version_supported
+#     import django.db.models.sql.compiler as sql_compiler
+#     sql_compiler.SQLInsertCompiler.return_id_enabled = False
 
 
 # Password validation
