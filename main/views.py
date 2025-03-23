@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from .models import Task, Project
+from django.db import IntegrityError
+from .models import Task, Project, User
 from datetime import date
 
 
@@ -38,19 +37,40 @@ def signup_view(request):
         password1 = request.POST.get("password1")
         password2 = request.POST.get("password2")
 
+        if not username or not email or not password1 or not password2:
+            messages.error(request, "All fields are required.")
+            return render(request, "main/signup.html")
+
         if password1 != password2:
             messages.error(request, "Passwords do not match.")
             return render(request, "main/signup.html")
 
         try:
+            # Check if username already exists
+            if User.objects.filter(username=username).exists():
+                messages.error(request, "Username already exists.")
+                return render(request, "main/signup.html")
+
+            # Check if email already exists
+            if User.objects.filter(email=email).exists():
+                messages.error(request, "Email already exists.")
+                return render(request, "main/signup.html")
+
+            # Create new user using our custom User model
             user = User.objects.create_user(
                 username=username, email=email, password=password1
             )
+
+            # Set additional fields if needed
             user.save()
+
             messages.success(
                 request, "Account created successfully! Please login to continue."
             )
             return redirect("login")
+
+        except IntegrityError:
+            messages.error(request, "Username or email already exists.")
         except Exception as e:
             messages.error(request, f"Error creating account: {str(e)}")
 

@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     "main",
 ]
 
+# Custom user model
+AUTH_USER_MODEL = "main.User"
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -85,20 +88,26 @@ DATABASES = {
         "OPTIONS": {
             "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
             "charset": "utf8mb4",
+            "use_unicode": True,
+        },
+        "TEST": {
+            "CHARSET": "utf8mb4",
+            "COLLATION": "utf8mb4_unicode_ci",
         },
     }
 }
 
-# Remove the compatibility patches since Django 4.2 works with MariaDB 10.4
-# DATABASE_COMPATIBILITY_MODE = True
-# if DATABASE_COMPATIBILITY_MODE:
-#     import django.db.backends.mysql.base as mysql_base
-#     original_check_database_version_supported = mysql_base.DatabaseWrapper.check_database_version_supported
-#     def patched_check_version_supported(self):
-#         pass
-#     mysql_base.DatabaseWrapper.check_database_version_supported = patched_check_version_supported
-#     import django.db.models.sql.compiler as sql_compiler
-#     sql_compiler.SQLInsertCompiler.return_id_enabled = False
+# Add MySQL compatibility mode for Django 3.2
+import django.db.backends.mysql.base as mysql_base
+
+
+def patched_check_version_supported(self):
+    pass
+
+
+mysql_base.DatabaseWrapper.check_database_version_supported = (
+    patched_check_version_supported
+)
 
 
 # Password validation
@@ -151,6 +160,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "index"
+
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
 
 # Session Settings
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Session expires when browser closes
