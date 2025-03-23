@@ -10,6 +10,9 @@ from datetime import date
 
 
 def index(request):
+    # Ensure user is logged out when viewing landing page
+    if request.user.is_authenticated:
+        logout(request)
     return render(request, "main/index.html")
 
 
