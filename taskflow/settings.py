@@ -129,7 +129,7 @@ TIME_ZONE = "Asia/Singapore"
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False  # Set to False to use local time without timezone conversion
 
 
 # Static files (CSS, JavaScript, Images)

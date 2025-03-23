@@ -44,8 +44,10 @@ def signup_view(request):
                 username=username, email=email, password=password1
             )
             user.save()
-            login(request, user)
-            return redirect("dashboard")
+            messages.success(
+                request, "Account created successfully! Please login to continue."
+            )
+            return redirect("login")
         except Exception as e:
             messages.error(request, f"Error creating account: {str(e)}")
 
